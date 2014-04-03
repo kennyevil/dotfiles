@@ -24,6 +24,9 @@ setopt histignoredups
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=4096
 SAVEHIST=4096
+source "$HOME/.dotfiles/zsh/history-substring-search.zsh"
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
 
 # awesome cd movements from zshkit
 setopt autocd autopushd pushdminus pushdsilent pushdtohome cdablevars
