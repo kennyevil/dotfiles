@@ -15,7 +15,8 @@
   co = checkout
   st = status --short
   fp = fetch --prune
-  pu = push origin
+  pu = push
+  puo = push --set-upstream origin
 [include]
   path = .gitconfig.local
 [credential]
