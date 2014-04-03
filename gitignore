@@ -1,0 +1,17 @@
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+._*
+Thumbs.db
+*.sw[nop]
+*.orig
+*~
+\#*\#
+/tags
+ 
+.bundle
+.env
+db/*.sqlite3
+log/*.log
+tmp/**/*

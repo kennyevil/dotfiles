@@ -1,0 +1,21 @@
+[hub]
+  protocol = https
+[push]
+  default = simple
+[color]
+  ui = auto
+[core]
+  excludesfile = ~/.gitignore
+  autocrlf = input
+  editor = "subl -w"
+[alias]
+  aa = add --all
+  ca = commit --amend
+  ci = commit -v
+  co = checkout
+  st = status --short
+  fp = fetch --prune
+[include]
+  path = .gitconfig.local
+[credential]
+  helper = osxkeychain
