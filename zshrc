@@ -1,5 +1,6 @@
 # ZSH
 source "$HOME/.dotfiles/zsh/prompt.zsh"
+export PATH="$HOME/.dotfiles/bin:$PATH"
 
 # completion
 autoload -U compinit
