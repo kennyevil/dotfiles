@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# Usage: googl URL
+#
+# Turns a URL into a goo.gl URL
+#
+# Created by @createdbypete:
+#
+# Copies the goo.gl URL to your clipboard.
+
+require 'json'
+
+url  = ARGV[0]
+
+output = JSON.parse(`curl https://www.googleapis.com/urlshortener/v1/url -H 'Content-Type: application/json' -d '{"longUrl": "#{url}"}' 2> /dev/null`)
+
+puts output['id']
+`echo #{output['id']} | pbcopy`
