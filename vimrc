@@ -40,7 +40,7 @@ set cursorline " Highlight current line
 set number        " Show line numbers
 syntax enable     " Use syntax highlighting
 set background=dark
-colorscheme solarized
+colorscheme base16-ocean
 
 " Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
 if executable('ag')
