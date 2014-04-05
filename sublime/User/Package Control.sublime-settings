@@ -1,6 +1,7 @@
 {
 	"installed_packages":
 	[
+		"Delete Current File",
 		"Git Config",
 		"GitGutter",
 		"Markdown Preview",
