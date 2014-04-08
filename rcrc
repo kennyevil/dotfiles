@@ -1,1 +1,1 @@
-DOTFILES_DIRS="$HOME/.dotfiles"
+EXCLUDES="LICENSE *.md sublime scripts"

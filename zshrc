@@ -1,11 +1,11 @@
 # ZSH
-source "$HOME/.dotfiles/zsh/prompt.zsh"
-export PATH="$HOME/.dotfiles/bin:$PATH"
+source "$HOME/.zsh/prompt.zsh"
+export PATH=".bin:$PATH"
 
 # completion
+export CDPATH=".:$HOME/Code"
 autoload -U compinit
 compinit
-cdpath=(~ ~/Code)
 
 # matches case insensitive for lowercase
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
