@@ -1,9 +1,10 @@
-# ZSH
-source "$HOME/.zsh/prompt.zsh"
-export PATH=".bin:$PATH"
+source ~/.zsh/prompt.zsh
+source ~/.zsh/homebrew.zsh
+
+# load our own completion functions
+fpath=(~/.zsh/completion $fpath)
 
 # completion
-export CDPATH=".:$HOME/Code"
 autoload -U compinit
 compinit
 
@@ -13,16 +14,21 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # pasting with tabs doesn't perform completion
 zstyle ':completion:*' insert-tab pending
 
+# load custom executable functions
+for function in ~/.zsh/functions/*; do
+  source $function
+done
+
 # makes color constants available
 autoload -U colors
 colors
 
 # enable colored output from ls, etc
-export CLICOLOR=true
+export CLICOLOR=1
 
 # history settings
 setopt histignoredups
-HISTFILE="$HOME/.zsh_history"
+HISTFILE=~/.zsh_history
 HISTSIZE=4096
 SAVEHIST=4096
 
@@ -30,36 +36,38 @@ SAVEHIST=4096
 setopt autocd autopushd pushdminus pushdsilent pushdtohome cdablevars
 DIRSTACKSIZE=5
 
-# Try to correct command line spelling
-setopt correct correctall
-
 # Enable extended globbing
 setopt extendedglob
 
 # Allow [ or ] whereever you want
 unsetopt nomatch
 
-# Hub
-if which hub > /dev/null; then eval "$(hub alias -s)"; fi
+# handy keybindings
+bindkey "^A" beginning-of-line
+bindkey "^E" end-of-line
+bindkey "^R" history-incremental-search-backward
+bindkey "^P" history-search-backward
+bindkey "^Y" accept-and-hold
+bindkey "^N" insert-last-word
+bindkey -s "^T" "^[Isudo ^[A" # "t" for "toughguy"
 
-# Homebrew
-export HOMEBREW_ROOT="/usr/local"
-export PATH="$HOMEBREW_ROOT/bin:$PATH"
-export CFLAGS="-I/usr/local/include"
-export LDFLAGS="-L/usr/local/lib"
-export MANPATH="$HOMEBREW_ROOT/share/man:$MANPATH"
+source ~/.zsh/aliases.zsh
 
-# OSX Helpers
-alias lock="/System/Library/CoreServices/Menu\ Extras/user.menu/Contents/Resources/CGSession -suspend"
-alias service="$HOMEBREW_ROOT/bin/brew services"
-
-# use sublime as the visual editor
+# use subl as the visual editor
 export VISUAL=subl
 export EDITOR=$VISUAL
+export PATH="bin:$HOME/.bin:$PATH"
 
-# Ruby
-export BUNDLE_JOBS=4
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+# load hub within git
+if which hub > /dev/null; then
+  eval "$(hub alias -s)"
+fi
 
-# Relative bin
-export PATH="bin:$PATH"
+# load rbenv if available
+if which rbenv > /dev/null; then
+  export BUNDLE_JOBS=4
+  eval "$(rbenv init -)"
+fi
+
+# Local config
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

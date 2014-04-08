@@ -17,6 +17,7 @@
   fp = fetch --prune
   pu = push
   puo = push --set-upstream origin
+  pr = !hub pull-request
 [include]
   path = .gitconfig.local
 [credential]

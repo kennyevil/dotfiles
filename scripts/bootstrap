@@ -1,3 +1,10 @@
 #!/bin/sh
+DOTFILES_ROOT="`pwd`"
 
-ln -svf "$HOME/.dotfiles/sublime/User" "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+set -e
+
+ln -svf "$DOTFILES_ROOT/rcrc" "$HOME/.rcrc"
+rcup -v
+
+ln -svf "$HOME/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" "$HOME/.bin/subl"
+ln -svf "$HOME/Code/createdbypete/dotfiles/sublime/User" "$HOME/Library/Application Support/Sublime Text 3/Packages/User"

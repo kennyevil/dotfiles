@@ -1,0 +1,3 @@
+function cbp() {
+  cd ~/Code/createdbypete/$1
+}
