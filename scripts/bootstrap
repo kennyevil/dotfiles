@@ -2,9 +2,45 @@
 DOTFILES_ROOT="`pwd`"
 
 set -e
+info () {
+  printf "  [ \033[00;34m..\033[0m ] $1"
+}
+
+user () {
+  printf "\r  [ \033[0;33m?\033[0m ] $1 "
+}
+
+success () {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+fail () {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  echo ''
+  exit
+}
+
+setup_gitconfig () {
+  if ! [ -f ~/.gitconfig.local ]
+  then
+    info 'setup gitconfig.local'
+
+    user ' - What is your github author name?'
+    read -e git_authorname
+    user ' - What is your github author email?'
+    read -e git_authoremail
+
+    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" "$DOTFILES_ROOT/gitconfig-local.example" > ~/.gitconfig.local
+
+    success 'gitconfig.local'
+  fi
+}
 
 ln -svf "$DOTFILES_ROOT/rcrc" "$HOME/.rcrc"
 rcup -v
 
+setup_gitconfig
+
 ln -svf "$HOME/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" "$HOME/.bin/subl"
-ln -svf "$HOME/Code/createdbypete/dotfiles/sublime/User" "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+rm -rf "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+ln -svF "$HOME/Code/createdbypete/dotfiles/sublime/User/" "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
