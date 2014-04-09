@@ -5,6 +5,8 @@ source ~/.zsh/homebrew.zsh
 fpath=(~/.zsh/completion $fpath)
 
 # completion
+setopt auto_cd
+cdpath=(~/Code)
 autoload -U compinit
 compinit
 
