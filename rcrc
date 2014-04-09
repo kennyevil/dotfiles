@@ -1,2 +1,2 @@
 DOTFILES_DIRS="$HOME/Code/createdbypete/dotfiles"
-EXCLUDES="LICENSE *.md *.example sublime scripts"
+EXCLUDES="Brewfile LICENSE *.md *.example sublime scripts"
