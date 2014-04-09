@@ -22,22 +22,6 @@ fail () {
   exit
 }
 
-setup_gitconfig () {
-  if ! [ -f ~/.gitconfig.local ]
-  then
-    info 'Setup gitconfig.local'
-
-    user ' - What is your github author name?'
-    read -e git_authorname
-    user ' - What is your github author email?'
-    read -e git_authoremail
-
-    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" "$DOTFILES_ROOT/gitconfig-local.example" > ~/.gitconfig.local
-
-    success 'gitconfig.local created'
-  fi
-}
-
 if ! which brew &>/dev/null; then
   # Install Homebrew (and Command Line Tools)
   info 'Installing Homebrew, a good OS X package manager ...'
@@ -132,14 +116,21 @@ if ! which rbenv &>/dev/null; then
   eval "$(rbenv init -)"
   export PATH="$HOME/.rbenv/shims:$PATH"
 
+  info 'Installing rbenv-gem-rehash so the shell automatically picks up binaries after installing gems with binaries...'
+  brew install rbenv-gem-rehash
+
+  success 'rbenv installed!'
+fi
+
+if ! which openssl &>/dev/null; then
   info 'Upgrading and linking OpenSSL ...'
   brew install openssl
   brew link openssl --force
   brew install curl-ca-bundle
+  success 'Installed OpenSSL!'
+fi
 
-  info 'Installing rbenv-gem-rehash so the shell automatically picks up binaries after installing gems with binaries...'
-  brew install rbenv-gem-rehash
-
+if which rbenv &>/dev/null; then
   ruby_version=2.1.1
   info 'Installing Ruby $ruby_version ...'
   rbenv install "$ruby_version"
