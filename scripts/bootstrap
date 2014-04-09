@@ -2,8 +2,10 @@
 DOTFILES_ROOT="`pwd`"
 
 set -e
+echo ''
+
 info () {
-  printf "  [ \033[00;34m..\033[0m ] $1"
+  printf "  [ \033[00;34m..\033[0m ] $1\n"
 }
 
 user () {
@@ -23,7 +25,7 @@ fail () {
 setup_gitconfig () {
   if ! [ -f ~/.gitconfig.local ]
   then
-    info 'setup gitconfig.local'
+    info 'Setup gitconfig.local'
 
     user ' - What is your github author name?'
     read -e git_authorname
@@ -32,15 +34,154 @@ setup_gitconfig () {
 
     sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" "$DOTFILES_ROOT/gitconfig-local.example" > ~/.gitconfig.local
 
-    success 'gitconfig.local'
+    success 'gitconfig.local created'
   fi
 }
 
-ln -svf "$DOTFILES_ROOT/rcrc" "$HOME/.rcrc"
+if ! which brew &>/dev/null; then
+  # Install Homebrew (and Command Line Tools)
+  info 'Installing Homebrew, a good OS X package manager ...'
+  ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+  export PATH="/usr/local/bin:$PATH"
+  success 'Homebrew installed!'
+else
+  info 'Homebrew already installed. Skipping ...'
+fi
+
+info 'Updating Homebrew formulas ...'
+brew update
+success 'Homebrew formulas updated!'
+
+if ! which rcup &>/dev/null; then
+  info 'Installing rcm, to manage your dotfiles ...'
+  brew tap thoughtbot/formulae
+  brew install rcm
+  success 'rcm installed!'
+else
+  info 'rcm already installed. Skipping ...'
+fi
+
+info 'Running rcup to symlink dotfiles using rcm ...'
+ln -sf "$DOTFILES_ROOT/rcrc" "$HOME/.rcrc"
 rcup -v
+success 'Dotfiles installed!'
 
-setup_gitconfig
+if ! [ -f ~/.gitconfig.local ]; then
+  info 'Setup gitconfig.local'
 
-ln -svf "$HOME/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" "$HOME/.bin/subl"
-rm -rf "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
-ln -svF "$HOME/Code/createdbypete/dotfiles/sublime/User/" "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+  user ' - What is your github author name?'
+  read -e git_authorname
+  user ' - What is your github author email?'
+  read -e git_authoremail
+
+  sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" "$DOTFILES_ROOT/gitconfig-local.example" > ~/.gitconfig.local
+
+  success 'gitconfig.local created'
+fi
+
+if [[ -f /etc/zshenv ]]; then
+  info 'Fixing OSX zsh environment bug ...'
+  sudo mv /etc/{zshenv,zshrc}
+fi
+
+if [[ ! $SHELL = '/bin/zsh' ]]; then
+  info 'Changing your shell to zsh ...'
+  chsh -s $(which zsh)
+  success 'Shell changed to zsh!'
+fi
+
+if [[ ! `which git` = '/usr/local/bin/git' ]]; then
+  info 'Installing Homebrew git ...'
+  brew install git
+  success 'Git installed!'
+fi
+
+if ! which hub &>/dev/null; then
+  info 'Installing GitHub CLI client ...'
+  brew install hub
+  success 'Hub installed!'
+fi
+
+if ! which ag &>/dev/null; then
+  info 'Installing The Silver Searcher (better than ack or grep) to search the contents of files ...'
+  brew install the_silver_searcher
+  success 'The Silver Searcher installed!'
+fi
+
+if ! which convert &>/dev/null; then
+  info 'Installing ImageMagick, to crop and resize images ...'
+  brew install imagemagick
+  success 'ImageMagick installed!'
+fi
+
+if ! which node &>/dev/null; then
+  info 'Installing NodeJS ...'
+  brew install nodejs
+  success 'NodeJS installed!'
+fi
+
+if ! which psql &>/dev/null; then
+  info 'Installing PostgreSQL, a good open source relational database ...'
+  brew install postgresql
+  success 'PostgreSQL installed!'
+fi
+
+if ! which rbenv &>/dev/null; then
+  info 'Installing rbenv, to change Ruby versions ...'
+  brew install rbenv ruby-build rbenv-gem-rehash
+  eval "$(rbenv init -)"
+  export PATH="$HOME/.rbenv/shims:$PATH"
+
+  info 'Upgrading and linking OpenSSL ...'
+  brew install openssl
+  brew link openssl --force
+  brew install curl-ca-bundle
+
+  info 'Installing rbenv-gem-rehash so the shell automatically picks up binaries after installing gems with binaries...'
+  brew install rbenv-gem-rehash
+
+  ruby_version=2.1.1
+  info 'Installing Ruby $ruby_version ...'
+  rbenv install "$ruby_version"
+  rbenv rehash
+  rbenv global "$ruby_version"
+
+  info 'Installing Bundler to install project-specific Ruby gems ...'
+  export ARCHFLAGS="-arch x86_64"
+  gem update --system
+  gem install bundler --pre
+  gem install powder
+  gem install pg
+
+  info 'Installing default gems plugin for future Ruby versions ...'
+  brew install rbenv-default-gems
+  if [[ ! -f $HOME/.rbenv/default-gems ]]; then
+    printf 'bundler --pre\n' >> $HOME/.rbenv/default-gems
+    printf 'powder\n' >> $HOME/.rbenv/default-gems
+  fi
+
+  success 'rbenv and Ruby installed!'
+fi
+
+info 'Installing brew cask ...'
+brew tap phinze/cask
+brew install brew-cask
+brew bundle
+success 'Brew cask and brew bundle installed!'
+
+if [[ ! -d $HOME/.pow ]]; then
+  info "Installing Pow, a zero-config Rack server ..."
+  curl get.pow.cx | sh
+  success 'Installed Pow!'
+fi
+
+if [[ ! -d "$HOME/Applications/Sublime Text.app" ]]; then
+  info 'Symlinking Sublime preferences and command line tool ...'
+  ln -svf "$HOME/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" "$HOME/.bin/subl"
+  rm -rf "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+  ln -svF "$HOME/Code/createdbypete/dotfiles/sublime/User/" "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+  success 'Sublime Text symlinked!'
+fi
+
+brew cleanup
+success 'All the things are done, have a nice day!'
