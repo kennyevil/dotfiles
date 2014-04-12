@@ -58,7 +58,6 @@ source ~/.zsh/aliases.zsh
 # use subl as the visual editor
 export VISUAL=subl
 export EDITOR=$VISUAL
-export PATH="bin:$HOME/.bin:$PATH"
 
 # load hub within git
 if which hub > /dev/null; then
@@ -70,6 +69,8 @@ if which rbenv > /dev/null; then
   export BUNDLE_JOBS=4
   eval "$(rbenv init -)"
 fi
+
+export PATH="bin:$HOME/.bin:$PATH"
 
 # Local config
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

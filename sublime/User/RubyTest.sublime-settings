@@ -1,0 +1,5 @@
+{
+  "check_for_bundler": true,
+  "check_for_rbenv": true,
+  "save_on_run": true,
+}

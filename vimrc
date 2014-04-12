@@ -38,6 +38,7 @@ set cursorline " Highlight current line
 
 " Some settings to enable the theme:
 set number        " Show line numbers
+set relativenumber
 syntax enable     " Use syntax highlighting
 set background=dark
 colorscheme base16-ocean
