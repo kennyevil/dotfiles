@@ -130,7 +130,7 @@ if ! which openssl &>/dev/null; then
   success 'Installed OpenSSL!'
 fi
 
-if which rbenv &>/dev/null; then
+if ! which rbenv &>/dev/null; then
   ruby_version=2.1.1
   info 'Installing Ruby $ruby_version ...'
   rbenv install "$ruby_version"
