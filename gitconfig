@@ -13,7 +13,7 @@
   ca = commit --amend
   ci = commit -v
   co = checkout
-  st = status --short
+  st = status --short --untracked-files
   fp = fetch --prune
   pu = push
   puo = push --set-upstream origin
