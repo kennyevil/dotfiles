@@ -175,4 +175,5 @@ if [[ ! -d "$HOME/Applications/Sublime Text.app" ]]; then
 fi
 
 brew cleanup
+brew cask cleanup
 success 'All the things are done, have a nice day!'
