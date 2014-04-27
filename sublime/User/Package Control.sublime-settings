@@ -2,6 +2,7 @@
 	"installed_packages":
 	[
 		"AdvancedNewFile",
+		"Better CoffeeScript",
 		"Git Config",
 		"GitGutter",
 		"Markdown Preview",
@@ -10,6 +11,7 @@
 		"RSpec",
 		"RubyTest",
 		"SCSS",
+		"SCSS Snippets",
 		"Theme - Spacegray",
 		"VimL"
 	]
