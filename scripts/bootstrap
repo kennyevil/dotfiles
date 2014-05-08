@@ -72,42 +72,56 @@ if [[ ! $SHELL = '/bin/zsh' ]]; then
   info 'Changing your shell to zsh ...'
   chsh -s $(which zsh)
   success 'Shell changed to zsh!'
+else
+  info 'Already using zsh. Skipping ...'
 fi
 
 if [[ ! `which git` = '/usr/local/bin/git' ]]; then
   info 'Installing Homebrew git ...'
   brew install git
   success 'Git installed!'
+else
+  info 'Git already installed. Skipping ...'
 fi
 
 if ! which hub &>/dev/null; then
   info 'Installing GitHub CLI client ...'
   brew install hub
   success 'Hub installed!'
+else
+  info 'Hub already installed. Skipping ...'
 fi
 
 if ! which ag &>/dev/null; then
   info 'Installing The Silver Searcher (better than ack or grep) to search the contents of files ...'
   brew install the_silver_searcher
   success 'The Silver Searcher installed!'
+else
+  info 'The Silver Searcher already installed. Skipping ...'
 fi
 
 if ! which convert &>/dev/null; then
   info 'Installing ImageMagick, to crop and resize images ...'
   brew install imagemagick
   success 'ImageMagick installed!'
+else
+  info 'ImageMagick already installed. Skipping ...'
 fi
 
 if ! which node &>/dev/null; then
   info 'Installing NodeJS ...'
   brew install nodejs
   success 'NodeJS installed!'
+else
+  info 'NodeJS already installed. Skipping ...'
 fi
 
 if ! which psql &>/dev/null; then
   info 'Installing PostgreSQL, a good open source relational database ...'
   brew install postgresql
   success 'PostgreSQL installed!'
+else
+  info 'PostgreSQL already installed. Skipping ...'
 fi
 
 if ! which rbenv &>/dev/null; then
@@ -120,17 +134,13 @@ if ! which rbenv &>/dev/null; then
   brew install rbenv-gem-rehash
 
   success 'rbenv installed!'
+else
+  info 'Rbenv already installed. Skipping ...'
 fi
 
-if ! which openssl &>/dev/null; then
-  info 'Upgrading and linking OpenSSL ...'
-  brew install openssl
-  brew link openssl --force
-  success 'Installed OpenSSL!'
-fi
-
-if ! which rbenv &>/dev/null; then
-  ruby_version=2.1.1
+ruby_version=2.1.1
+rbenv versions | grep "$ruby_version" &> /dev/null
+if [[ $? != 0 ]]; then
   info 'Installing Ruby $ruby_version ...'
   rbenv install "$ruby_version"
   rbenv rehash
@@ -150,29 +160,54 @@ if ! which rbenv &>/dev/null; then
     printf 'powder\n' >> $HOME/.rbenv/default-gems
   fi
 
-  success 'rbenv and Ruby installed!'
+  success "Ruby $ruby_version and gems installed!"
+else
+  info "Ruby $ruby_version already installed. Skipping ..."
 fi
 
-info 'Installing brew cask ...'
-brew tap phinze/cask
-brew install brew-cask
+brew tap | grep 'caskroom/cask' &> /dev/null
+if [[ $? != 0 ]]; then
+  info 'Installing brew cask ...'
+  brew tap caskroom/cask
+  success 'caskroom/cask tapped!'
+else
+  info 'caskroom/cask already tapped. Skipping ...'
+fi
+
+brew list | grep 'brew-cask' &> /dev/null
+if [[ $? != 0 ]]; then
+  brew install brew-cask
+  success 'brew-cask installed!'
+else
+  info 'brew-cask already installed. Skipping ...'
+fi
+
+info 'Installing from Brewfile ...'
 brew bundle
-success 'Brew cask and brew bundle installed!'
 
 if [[ ! -d $HOME/.pow ]]; then
   info "Installing Pow, a zero-config Rack server ..."
   curl get.pow.cx | sh
   success 'Installed Pow!'
+else
+  info '~/.pow already exists. Skipping Pow install ...'
 fi
 
-if [[ ! -d "$HOME/Applications/Sublime Text.app" ]]; then
+if [[ -d "$HOME/Applications/Sublime Text.app" ]]; then
   info 'Symlinking Sublime preferences and command line tool ...'
-  ln -svf "$HOME/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" "$HOME/.bin/subl"
-  rm -rf "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
-  ln -svF "$HOME/Code/createdbypete/dotfiles/sublime/User/" "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+  if [[ ! -f "$HOME/.bin/subl" ]]; then
+    ln -svf "$HOME/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" "$HOME/.bin/subl"
+  fi
+  if [[ ! -h "$HOME/Library/Application Support/Sublime Text 3/Packages/User" ]]; then
+    rm -rf "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+    ln -svF "$HOME/Code/createdbypete/dotfiles/sublime/User/" "$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+  fi
   success 'Sublime Text symlinked!'
+else
+  info 'Sublime Text does not exist. Skipping ...'
 fi
 
+info 'Cleaning up after brew ...'
 brew cleanup
 brew cask cleanup
-success 'All the things are done, have a nice day!'
+success "You're all done, have a nice day!"
