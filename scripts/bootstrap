@@ -126,6 +126,7 @@ fi
 
 if ! which rbenv &>/dev/null; then
   info 'Installing rbenv, to change Ruby versions ...'
+  brew install openssl
   brew install rbenv ruby-build
   eval "$(rbenv init -)"
   export PATH="$HOME/.rbenv/shims:$PATH"
