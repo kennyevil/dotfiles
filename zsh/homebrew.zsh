@@ -4,4 +4,5 @@ if which brew &>/dev/null; then
   export CFLAGS="-I/usr/local/include"
   export LDFLAGS="-L/usr/local/lib"
   export MANPATH="/usr/local/share/man:$MANPATH"
+  export ARCHFLAGS="-arch x86_64"
 fi
